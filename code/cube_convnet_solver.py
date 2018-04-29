@@ -264,6 +264,9 @@ class InteractiveCube(plt.Axes):
         self._face_polys = None
         self._sticker_polys = None
 
+        # Label Move list
+        self._moveList = []
+
         self._draw_cube()
 
         # connect some GUI events
@@ -370,6 +373,9 @@ class InteractiveCube(plt.Axes):
 
         self._pycuber_rep = pc.Cube()
 
+        self._resetLabels()
+
+    def _resetLabels(self):
         try:
             self.scrambleLabel.remove()
             self.scrambleLabel = None
@@ -379,18 +385,26 @@ class InteractiveCube(plt.Axes):
             print('no scramblelabel')
         self.figure.canvas.draw()
 
+    def _printShuffleLabel(self, moves):
+        try:
+            self.scrambleLabel.remove()
+            self.scrambleLabel = None
+        except AttributeError:
+            print('no scrambleLabel')
+        self.scrambleLabel = self.figure.text(0.05,0.95, str(moves), fontsize=10)
+        self.figure.canvas.draw()
 
 
     def _shuffle_cube(self, *args):
         self._reset_cube(self, *args)
         cube_scrambled,scramble_instructions,solution = generate_game(max_moves = max_moves)
-
+        self._moveList = scramble_instructions
         # plot scramble_instructions
-        scrambleText = str(scramble_instructions)
-        print(scrambleText)
 
-        self.scrambleLabel = self.figure.text(0.05,0.95, scrambleText, fontsize=10)
-        self.figure.canvas.draw()
+        print(str(scramble_instructions))
+        self._printShuffleLabel(scramble_instructions)
+
+
 
 
         for j in scramble_instructions:
@@ -419,9 +433,7 @@ class InteractiveCube(plt.Axes):
         cube = self._pycuber_rep
         moves = []
         for j in range(10):
-            cube_np = cube2np(cube)
-            cube_np = np.reshape(cube_np,(1,18,3,1))
-            move = possible_moves[np.argmax(model.predict(cube_np))]
+            move = self._convertPycubeToMove(cube)
             moves.append(move)
             cube(move)
             if cube == cube_solved:
@@ -447,6 +459,11 @@ class InteractiveCube(plt.Axes):
                     self.rotate_face(str(j)[0])
                     self.rotate_face(str(j)[0])
 
+    def _convertPycubeToMove(self, cube):
+        cube_np = cube2np(cube)
+        cube_np = np.reshape(cube_np,(1,18,3,1))
+        move = possible_moves[np.argmax(model.predict(cube_np))]
+        return move
 
     def _key_press(self, event):
         """Handler for key press events"""
@@ -479,24 +496,21 @@ class InteractiveCube(plt.Axes):
             else:
                 direction = 1
 
-
+            sanitizedMove = event.key.upper() + "" if direction == 1 else "'"
             if np.any(self._digit_flags[:self.cube.N]):
-                for d in solvesolve.arange(self.cube.N)[self._digit_flags[:self.cube.N]]:
+                for d in np.arange(self.cube.N)[self._digit_flags[:self.cube.N]]:
                     self.rotate_face(event.key.upper(), direction, layer=d)
-
-                    if direction == 1:
-                        self._pycuber_rep((event.key.upper()))
-                    elif direction == -1:
-                        self._pycuber_rep((event.key.upper()+"'"))
-
+                    self._pycuber_rep(sanitizedMove)
             else:
                 self.rotate_face(event.key.upper(), direction)
-                if direction == 1:
-                    self._pycuber_rep((event.key.upper()))
-                elif direction == -1:
-                    self._pycuber_rep((event.key.upper()+"'"))
+                self._pycuber_rep(sanitizedMove)
 
-        self._draw_cube()
+            self._moveList.append(sanitizedMove)
+
+            print(str(self._moveList))
+            self._printShuffleLabel(self._moveList)
+            self._draw_cube()
+
 
     def _key_release(self, event):
         """Handler for key release event"""
