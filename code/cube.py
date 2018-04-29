@@ -51,6 +51,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.patches import Polygon
 
+
 class Cube(object):
     """
     Cube
@@ -59,6 +60,7 @@ class Cube(object):
     - `N`, the side length (the cube is `N`x`N`x`N`)
     - optional `whiteplastic=True` if you like white cubes
     """
+    possible_moves = ["R","R'","R2","U","U'","U2","F","F'","F2","D","D'","D2","B","B'","B2","L","L'","L2"]
     facedict = {"U":0, "D":1, "F":2, "B":3, "R":4, "L":5}
     dictface = dict([(v, k) for k, v in facedict.items()])
     normals = [np.array([0., 1., 0.]), np.array([0., -1., 0.]),
@@ -66,8 +68,8 @@ class Cube(object):
                np.array([1., 0., 0.]), np.array([-1., 0., 0.])]
     # this xdirs has to be synchronized with the self.move() function
     xdirs = [np.array([1., 0., 0.]), np.array([1., 0., 0.]),
-               np.array([1., 0., 0.]), np.array([-1., 0., 0.]),
-               np.array([0., 0., -1.]), np.array([0, 0., 1.])]
+             np.array([1., 0., 0.]), np.array([-1., 0., 0.]),
+             np.array([0., 0., -1.]), np.array([0, 0., 1.])]
     colordict = {"w":0, "y":1, "b":2, "g":3, "o":4, "r":5}
     pltpos = [(0., 1.05), (0., -1.05), (0., 0.), (2.10, 0.), (1.05, 0.), (-1.05, 0.)]
     labelcolor = "#7f00ff"
@@ -284,6 +286,39 @@ class Cube(object):
         ax.set_ylim(ylim)
         return fig
 
+    def sanitize_formula(self, inputArray):
+        # global possible_moves
+        if type(inputArray) is str:
+            inputArray = inputArray.split(" ")
+
+        for turn in inputArray:
+            self.possible_moves.index(turn)
+        return inputArray
+
+    """
+    formula is an array of possbile_moves
+    """
+    def ingest(self, formula):
+
+        for move in formula:
+            face = move[0]
+            classifier = move[1] if len(move) > 1 else None
+            direction = 1
+            if classifier == "'":
+                direction = -1
+            elif classifier == "2":
+                direction = 2
+
+            print face, direction
+            self.move(face, 0, direction)
+        return self
+
+    def test(self):
+        formula = "R U R' U' D' R' F R2 U' D D R' U' R U R' D' F'"
+        moves = self.sanitize_formula(formula)
+        self.ingest(moves)
+
+
 def adjacent_edge_flip(cube):
     """
     Do a standard edge-flipping algorithm.  Used for testing.
@@ -336,18 +371,20 @@ def checkerboard(cube):
             cube.move("F", l, 2)
     return None
 
+
+
 if __name__ == "__main__":
     """
     Functional testing.
     """
     np.random.seed(42)
     c = Cube(6, whiteplastic=False)
-#    c.turn("U", 1)
-#    c.move("U", 0, -1)
-#    swap_off_diagonal(c, "R", 2, 1)
-#    c.move("U", 0, 1)
-#    swap_off_diagonal(c, "R", 3, 2)
-#    checkerboard(c)
+    #    c.turn("U", 1)
+    #    c.move("U", 0, -1)
+    #    swap_off_diagonal(c, "R", 2, 1)
+    #    c.move("U", 0, 1)
+    #    swap_off_diagonal(c, "R", 3, 2)
+    #    checkerboard(c)
     for m in range(32):
         c.render(flat=False).savefig("test%02d.png" % m, dpi=865 / c.N)
         c.randomize(1)
