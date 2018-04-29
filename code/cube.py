@@ -50,6 +50,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.patches import Polygon
+import copy
 
 
 class Cube(object):
@@ -89,6 +90,12 @@ class Cube(object):
             self.plasticcolor = "#1f1f1f"
         self.fontsize = 12. * (self.N / 5.)
         return None
+
+    def __str__(self):
+        return str(self.stickers)
+
+    def copy(self):
+        return copy.copy(self);
 
     def turn(self, f, d):
         """
@@ -299,6 +306,8 @@ class Cube(object):
     formula is an array of possbile_moves
     """
     def ingest(self, formula):
+        if type(formula) is str:
+            formula = self.sanitize_formula(formula)
 
         for move in formula:
             face = move[0]
@@ -309,7 +318,7 @@ class Cube(object):
             elif classifier == "2":
                 direction = 2
 
-            print face, direction
+            print ("face is {0} direction is {1}".format(face, direction))
             self.move(face, 0, direction)
         return self
 
