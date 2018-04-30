@@ -372,10 +372,12 @@ class InteractiveCube(plt.Axes):
         self._draw_cube()
 
     def _reset_cube(self, *args):
+
         move_list = self.cube._move_list[:]
         for (face, n, layer) in move_list[::-1]:
             self.rotate_face(face, -n, layer, steps=3)
         self.cube._move_list = []
+        self._moveList = []
 
         self._pycuber_rep = pc.Cube()
 
