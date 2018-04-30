@@ -45,6 +45,7 @@ After any rotation, this can be used to quickly restore the cube to
 canonical position.
 """
 
+
 class InteractiveCube(plt.Axes):
     def __init__(self, cube=None,
                  interactive=True,
@@ -303,6 +304,7 @@ class InteractiveCube(plt.Axes):
 
     def _convertPycubeToMove(self, cube):
         cube_np = cube2np(cube)
+        print cube_np
         cube_np = np.reshape(cube_np,(1,18,3,1))
         move = possible_moves[np.argmax(model.predict(cube_np))]
         return move
