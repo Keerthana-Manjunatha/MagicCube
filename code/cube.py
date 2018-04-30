@@ -94,6 +94,9 @@ class Cube(object):
     def __str__(self):
         return str(self.stickers)
 
+    def __repr__(self):
+        return str(self.stickers)
+
     def copy(self):
         return copy.copy(self);
 
@@ -302,6 +305,21 @@ class Cube(object):
             self.possible_moves.index(turn)
         return inputArray
 
+    def reverseFormula(self, moves):
+        print moves
+        if moves is None or len(moves) == 0:
+            return moves
+
+        reversedMoves = []
+        moves.reverse()
+        for move in moves:
+            face = move[0]
+            classifier = move[1] if len(move) > 1 else ""
+            if classifier == "'":
+                reversedMoves.append(face)
+            reversedMoves.append(face + classifier)
+
+        return reversedMoves
     """
     formula is an array of possbile_moves
     """
