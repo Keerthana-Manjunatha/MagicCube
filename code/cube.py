@@ -317,7 +317,10 @@ class Cube(object):
             classifier = move[1] if len(move) > 1 else ""
             if classifier == "'":
                 reversedMoves.append(face)
-            reversedMoves.append(face + classifier)
+            elif classifier == "":
+                reversedMoves.append(face + "'")
+            else:
+                reversedMoves.append(move)
 
         return reversedMoves
     """
@@ -344,6 +347,7 @@ class Cube(object):
         formula = "R U R' U' D' R' F R2 U' D D R' U' R U R' D' F'"
         moves = self.sanitize_formula(formula)
         self.ingest(moves)
+        print self.reverseFormula(formula)
 
 
 def adjacent_edge_flip(cube):
