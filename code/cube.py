@@ -98,7 +98,9 @@ class Cube(object):
         return str(self.stickers)
 
     def copy(self):
-        return copy.copy(self);
+        aCopy = copy.copy(self);
+        aCopy.stickers = copy.copy(self.stickers)
+        return aCopy
 
     def turn(self, f, d):
         """
