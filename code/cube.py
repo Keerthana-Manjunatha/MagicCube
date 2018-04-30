@@ -308,7 +308,7 @@ class Cube(object):
         return inputArray
 
     def reverseFormula(self, moves):
-        print moves
+        # print moves
         if moves is None or len(moves) == 0:
             return moves
 
