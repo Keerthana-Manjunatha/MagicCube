@@ -154,7 +154,7 @@ class Cube(object):
                 self.stickers[i] = np.rot90(self.stickers[i], 3)
             if l == self.N - 1:
                 self.stickers[i2] = np.rot90(self.stickers[i2], 1)
-        print "moved", f, l, len(ds)
+        # print "moved", f, l, len(ds)
         return None
 
     def _rotate(self, args):
@@ -318,7 +318,7 @@ class Cube(object):
             elif classifier == "2":
                 direction = 2
 
-            print ("face is {0} direction is {1}".format(face, direction))
+            # print ("face is {0} direction is {1}".format(face, direction))
             self.move(face, 0, direction)
         return self
 
