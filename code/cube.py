@@ -27,6 +27,8 @@ usage
 - make cube moves with `c.move()` and turn the whole cube with `c.turn()`.
 - make figures with `c.render().savefig(fn)` where `fn` is the filename.
 - change sticker colors with, eg, `c.stickercolors[c.colordict["w"]] = "k"`.
+- can input a sequence of moves by using the ingest method `c.ingest("F F' U L R B D D2")`
+- can get the solution sequence by using the reverseFormula method `c.reverseFormula("F F' U L R D2")`
 
 conventions
 -----------
@@ -42,7 +44,7 @@ to-do
 -----
 - Write translations to other move languages, so you can take a string of moves from some website (eg, <http://www.speedcubing.com/chris/3-permutations.html>) and execute it.
 - Keep track of sticker ID numbers and orientations to show that seemingly unchanged parts of big cubes have had cubie swaps or stickers rotated.
-- Figure out a physical "cubie" model to replace the "sticker" model.
+- Figure out a physical "cubie" model to replace the "sticker" model. DONE - print(c) -> show faces
 
 """
 
