@@ -77,7 +77,7 @@ class Cube(object):
     pltpos = [(0., 1.05), (0., -1.05), (0., 0.), (2.10, 0.), (1.05, 0.), (-1.05, 0.)]
     labelcolor = "#7f00ff"
 
-    def __init__(self, N, whiteplastic=False):
+    def __init__(self, N=3, whiteplastic=False):
         """
         (see above)
         """

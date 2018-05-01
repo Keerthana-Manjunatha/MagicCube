@@ -101,6 +101,7 @@ class DrawCube:
             self.face_colors = face_colors
 
         self._move_list = []
+        self._pycuber_rep = c.Cube(3)
         self._initialize_arrays()
 
 
@@ -225,7 +226,7 @@ class InteractiveCube(plt.Axes):
         self._view = view
         self._start_rot = Quaternion.from_v_theta((1, -1, 0),
                                                   -np.pi / 6)
-        self._pycuber_rep = pc.Cube()
+        self._pycuber_rep = c.Cube()
 
         if fig is None:
             fig = plt.gcf()
@@ -379,7 +380,7 @@ class InteractiveCube(plt.Axes):
         self.cube._move_list = []
         self._moveList = []
 
-        self._pycuber_rep = pc.Cube()
+        self._pycuber_rep = c.Cube()
 
         self._resetLabels()
 
@@ -417,7 +418,7 @@ class InteractiveCube(plt.Axes):
 
         for j in scramble_instructions:
 
-            self._pycuber_rep(str(j))
+            self._pycuber_rep.ingest(str(j))
 
             if(len(str(j))==1):
                 self.rotate_face(str(j)[0])
@@ -437,13 +438,13 @@ class InteractiveCube(plt.Axes):
 
         global model
 
-        cube_solved = pc.Cube()
+        cube_solved = c.Cube()
         cube = self._pycuber_rep
         moves = []
         for j in range(10):
             move = self._convertPycubeToMove(cube)
             moves.append(move)
-            cube(move)
+            cube.ingest(move)
             if cube == cube_solved:
                 break
         print(str(moves))
@@ -468,9 +469,9 @@ class InteractiveCube(plt.Axes):
                     self.rotate_face(str(j)[0])
 
     def _convertPycubeToMove(self, cube):
-        cube_np = cube2np(cube)
-        print cube_np
-        cube_np = np.reshape(cube_np,(1,18,3,1))
+        # cube_np = cube2np(cube)
+        print cube
+        cube_np = np.reshape(cube.stickers,(1,18,3,1))
         move = possible_moves[np.argmax(model.predict(cube_np))]
         return move
 
@@ -509,10 +510,10 @@ class InteractiveCube(plt.Axes):
             if np.any(self._digit_flags[:self.cube.N]):
                 for d in np.arange(self.cube.N)[self._digit_flags[:self.cube.N]]:
                     self.rotate_face(event.key.upper(), direction, layer=d)
-                    self._pycuber_rep(sanitizedMove)
+                    self._pycuber_rep.ingest(sanitizedMove)
             else:
                 self.rotate_face(event.key.upper(), direction)
-                self._pycuber_rep(sanitizedMove)
+                self._pycuber_rep.ingest(sanitizedMove)
 
             self._moveList.append(sanitizedMove)
 
@@ -578,7 +579,7 @@ def generate_game(max_moves = 1):
 
     # generate a single game with max number of permutations number_moves
 
-    mycube = pc.Cube()
+    mycube = c.Cube()
 
     global possible_moves
     formula = []
@@ -588,15 +589,14 @@ def generate_game(max_moves = 1):
 
     #my_formula = pc.Formula("R U R' U' D' R' F R2 U' D D R' U' R U R' D' F'")
 
-    my_formula = pc.Formula(formula)
+    my_formula = mycube.sanitize_formula(formula)
 
-
-    mycube = mycube((my_formula))
+    mycube.ingest(my_formula)
     # use this instead if you want it in OG data type
-    scramble_instructions = my_formula.copy()
+    # scramble_instructions = my_formula.copy()
     cube_scrambled = mycube.copy()
 
-    solution = my_formula.reverse()
+    solution = mycube.reverseFormula(my_formula)
 
     #print(mycube)
 
@@ -621,9 +621,10 @@ def cube2np(mycube):
 if __name__ == '__main__':
     import keras
     from keras.models import load_model
-    import pycuber as pc
+    # import pycuber as pc
     import sys
     import numpy as np
+    import cube as c
 
     from    random import randint
     possible_moves = ["R","R'","R2","U","U'","U2","F","F'","F2","D","D'","D2","B","B'","B2","L","L'","L2"]
@@ -632,14 +633,14 @@ if __name__ == '__main__':
 
     max_moves  = 6
 
-    model = load_model('rubiks_model.h5')
+    model = load_model('rubiks_model_wtvr.h5')
 
     try:
         N = int(sys.argv[1])
     except:
         N = 3
 
-    c = DrawCube(N)
+    testcube = DrawCube(N)
 
 
     # # do a 3-corner swap
@@ -661,7 +662,7 @@ if __name__ == '__main__':
     #c.rotate_face('R', -1)
     #c.rotate_face('U')
     #c.rotate_face('U')
-    c.draw_interactive()
+    testcube.draw_interactive()
     #c.rotate_face('U')
 
     plt.show()
