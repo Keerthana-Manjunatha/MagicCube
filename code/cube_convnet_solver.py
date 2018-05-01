@@ -383,6 +383,10 @@ class InteractiveCube(plt.Axes):
         self._pycuber_rep = c.Cube()
 
         self._resetLabels()
+        self.scrambleLabel = self.figure.text(0.05,0.95, "", fontsize=10)
+        self.solutionLabel = self.figure.text(0.05,0.95, "", fontsize=10)
+
+
 
     def _resetLabels(self):
         try:
@@ -633,7 +637,7 @@ if __name__ == '__main__':
 
     max_moves  = 6
 
-    model = load_model('rubiks_model_cube.h5')
+    model = load_model('rubiks_model_validReg50.h5')
 
     try:
         N = int(sys.argv[1])
