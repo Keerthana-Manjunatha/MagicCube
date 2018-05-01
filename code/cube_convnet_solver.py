@@ -442,10 +442,10 @@ class InteractiveCube(plt.Axes):
         cube = self._pycuber_rep
         moves = []
         for j in range(10):
-            move = self._convertPycubeToMove(cube)
+            move = self._getNextMove(cube)
             moves.append(move)
             cube.ingest(move)
-            if cube == cube_solved:
+            if str(cube) == str(cube_solved):
                 break
         print(str(moves))
 
@@ -468,7 +468,7 @@ class InteractiveCube(plt.Axes):
                     self.rotate_face(str(j)[0])
                     self.rotate_face(str(j)[0])
 
-    def _convertPycubeToMove(self, cube):
+    def _getNextMove(self, cube):
         # cube_np = cube2np(cube)
         print cube
         cube_np = np.reshape(cube.stickers,(1,18,3,1))
@@ -633,7 +633,7 @@ if __name__ == '__main__':
 
     max_moves  = 6
 
-    model = load_model('rubiks_model_wtvr.h5')
+    model = load_model('rubiks_model_cube.h5')
 
     try:
         N = int(sys.argv[1])
