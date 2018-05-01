@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import widgets
 from projection import Quaternion, project_points
-import cube
+import cube as c
 
 """
 Sticker representation
@@ -44,8 +44,8 @@ The canonical order is found by doing
 After any rotation, this can be used to quickly restore the cube to
 canonical position.
 """
-class Cube:
-    """Magic Cube Representation"""
+class DrawCube:
+    """Magic DrawCube Representation"""
     # define some attribues
     default_plastic_color = 'black'
     default_face_colors = ["w", "#ffcf00",
@@ -216,11 +216,11 @@ class InteractiveCube(plt.Axes):
                  fig=None, rect=[0, 0.16, 1, 0.84],
                  **kwargs):
         if cube is None:
-            self.cube = Cube(3)
-        elif isinstance(cube, Cube):
+            self.cube = DrawCube(3)
+        elif isinstance(cube, DrawCube):
             self.cube = cube
         else:
-            self.cube = Cube(cube)
+            self.cube = DrawCube(cube)
 
         self._view = view
         self._start_rot = Quaternion.from_v_theta((1, -1, 0),
@@ -639,7 +639,7 @@ if __name__ == '__main__':
     except:
         N = 3
 
-    c = Cube(N)
+    c = DrawCube(N)
 
 
     # # do a 3-corner swap
