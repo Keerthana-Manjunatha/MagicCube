@@ -305,11 +305,11 @@ class InteractiveCube(plt.Axes):
         self._btn_solve = widgets.Button(self._ax_solve, 'Reset Cube')
         self._btn_solve.on_clicked(self._reset_cube)
 
-        self._ax_shuffle = self.figure.add_axes([0.8, 0.9, 0.23, 0.075])
+        self._ax_shuffle = self.figure.add_axes([0.78, 0.9, 0.2, 0.075])
         self._btn_shuffle = widgets.Button(self._ax_shuffle, 'Shuffle')
         self._btn_shuffle.on_clicked(self._shuffle_cube)
 
-        self._ax_solveNN = self.figure.add_axes([0.8, 0.75, 0.2, 0.075])
+        self._ax_solveNN = self.figure.add_axes([0.78, 0.75, 0.2, 0.075])
         self._btn_solveNN = widgets.Button(self._ax_solveNN, 'Solve')
         self._btn_solveNN.on_clicked(self._solve_cube_NN)
 
